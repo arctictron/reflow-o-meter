@@ -110,7 +110,7 @@ void setup(void){
     errorLight();   
   } else {
     Serial.println("Ready");
-    LEDS.setBrightness(50);
+    LEDS.setBrightness(80);
   }
 }
 
@@ -170,9 +170,9 @@ Serial.println();
     while(!cancelled) {
       startTimeDiff = millis() - startTime;
     
-      if(startTimeDiff < 15000) {
+      if(startTimeDiff < 20000) {
         updateLight(0,255,0,20);
-      } else if(startTimeDiff < 25000) {
+      } else if(startTimeDiff < 30000) {
         updateLight(255,215,0,20);
       } else {
         updateLight(255,0,0,20);
