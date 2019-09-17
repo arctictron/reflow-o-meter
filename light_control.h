@@ -3,6 +3,9 @@
 #define NUM_LEDS 64 * NUM_MATRICES
 #define DATA_PIN 18
 #define CLOCK_PIN 5
+#define RING_DATA_PIN 15
+#define RING_CLOCK_PIN 14
+#define RING_NUM_LEDS 40
 
 // Setup light params
 CRGB matrix[NUM_LEDS];
@@ -13,8 +16,12 @@ const int moduleWidth = 3;
 int matrixMap[moduleHeight][moduleWidth] = {{0,1,2}};
 int orientation[moduleHeight * moduleWidth] = {3,3,3};
 
+// Setup ring light params
+CRGB ring[RING_NUM_LEDS];
+
 // Setup other params
 int bootCycle = individualMatrixWidth * moduleWidth -1;
+int bootRingCycle = 0;
 int cancelCycle = individualMatrixWidth * moduleWidth -1;
 
 void fadeAll(uint8_t scale = 250) {
@@ -70,6 +77,9 @@ void bootLight(bool booting = true) {
       matrix[XY(bootCycle, y)].setRGB(0,0,255);
     }
 
+    // Ring light
+    ring[bootRingCycle].setRGB(0,0,255);  
+
     FastLED.show();
     delay(10);
     fadeAll(120);
@@ -78,6 +88,12 @@ void bootLight(bool booting = true) {
       bootCycle = individualMatrixWidth * moduleWidth - 1;
     } else {
       bootCycle--;
+    }
+
+    if(bootRingCycle == RING_NUM_LEDS - 1) {
+      bootRingCycle = 0;
+    } else {
+      bootRingCycle++;
     }
   } else {
     lightOff();

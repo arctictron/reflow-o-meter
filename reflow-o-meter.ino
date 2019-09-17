@@ -30,6 +30,8 @@ void setup(void){
 
   // Setup light
   LEDS.addLeds<APA102, DATA_PIN, CLOCK_PIN, BGR, DATA_RATE_MHZ(1)>(matrix, NUM_LEDS);
+  LEDS.addLeds<APA102, RING_DATA_PIN, RING_CLOCK_PIN, BGR, DATA_RATE_MHZ(1)>(ring, RING_NUM_LEDS);
+
   LEDS.setBrightness(10);
   lightOff();
 
