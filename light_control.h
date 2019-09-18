@@ -23,10 +23,17 @@ CRGB ring[RING_NUM_LEDS];
 int bootCycle = individualMatrixWidth * moduleWidth -1;
 int bootRingCycle = 0;
 int cancelCycle = individualMatrixWidth * moduleWidth -1;
+int cancelRingCycle = 0;
 
 void fadeAll(uint8_t scale = 250) {
   for (int i = 0; i < NUM_LEDS; i++) {
     matrix[i].nscale8(scale);
+  }
+}
+
+void ringFade(uint8_t scale = 250) {
+  for (int i = 0; i < RING_NUM_LEDS; i++) {
+    ring[i].nscale8(scale);
   }
 }
 
@@ -71,6 +78,14 @@ void lightOff() {
   FastLED.show();
 }
 
+void ringLightOff() {
+  for(int n = 0; n < RING_NUM_LEDS; n++) {
+    ring[n].setRGB(0,0,0);
+  }
+
+  FastLED.show();
+}
+
 void bootLight(bool booting = true) {
   if(booting) {
     for (int y = 0; y < (individualMatrixHeight *  moduleHeight); y++) {
@@ -83,6 +98,7 @@ void bootLight(bool booting = true) {
     FastLED.show();
     delay(10);
     fadeAll(120);
+    ringFade(180);
 
     if(bootCycle == 0) {
       bootCycle = individualMatrixWidth * moduleWidth - 1;
@@ -97,19 +113,31 @@ void bootLight(bool booting = true) {
     }
   } else {
     lightOff();
+    ringLightOff();
   }
 }
 
 void errorLight() {
+  int i = 0;
+
   while(true) {
     for (int x = individualMatrixWidth * moduleWidth -1; x >= 0; x--) {
       for (int y = 0; y < (individualMatrixHeight *  moduleHeight); y++) {
         matrix[XY(x, y)].setRGB(255,255,255);
       }
 
+      ring[i].setRGB(255,255,255);
+
       FastLED.show();
       delay(50);
       fadeAll(120);
+      ringFade(120);
+
+      if(i == RING_NUM_LEDS - 1) {
+        i = 0;
+      } else {
+        i++;
+      }
     }
   }
 }
@@ -118,14 +146,23 @@ void updateLight(int r, int g, int b, unsigned int delayTime = 0) {
   for (int y = 0; y < (individualMatrixHeight *  moduleHeight); y++) {
       matrix[XY(cancelCycle, y)].setRGB(r,g,b);
   }
+
+  ring[cancelRingCycle].setRGB(r,g,b);
   
   FastLED.show();
   delay(delayTime);
   fadeAll(120);
+  ringFade(140);
 
   if(cancelCycle == 0) {
     cancelCycle = individualMatrixWidth * moduleWidth - 1;
   } else {
     cancelCycle--;
+  }
+
+  if(cancelRingCycle == RING_NUM_LEDS -1) {
+    cancelRingCycle = 0;
+  } else {
+    cancelRingCycle++;
   }
 }

@@ -34,6 +34,7 @@ void setup(void){
 
   LEDS.setBrightness(10);
   lightOff();
+  ringLightOff();
 
   // Boot
   Serial.println("Welcome to the Reflow-o-Meter");
